@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -21,8 +22,19 @@ export function AuthModal({ mode, onToggleMode, onClose }: AuthModalProps) {
   const [username, setUsername] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [mounted, setMounted] = useState(false)
   
   const { signIn, signUp } = useAuth()
+
+  useEffect(() => {
+    setMounted(true)
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden'
+    
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -61,9 +73,17 @@ export function AuthModal({ mode, onToggleMode, onClose }: AuthModalProps) {
     }
   }
 
-  return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-      <Card className="w-full max-w-md my-8 mx-auto">
+  if (!mounted || typeof document === 'undefined') return null
+
+  const modalContent = (
+    <div 
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]" 
+      onClick={onClose}
+    >
+      <Card 
+        className="w-full max-w-md relative bg-card shadow-2xl border" 
+        onClick={(e) => e.stopPropagation()}
+      >
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
             {mode === 'signup' ? 'Create Account' : 'Welcome Back'}
@@ -169,4 +189,6 @@ export function AuthModal({ mode, onToggleMode, onClose }: AuthModalProps) {
       </Card>
     </div>
   )
+
+  return createPortal(modalContent, document.body)
 }
