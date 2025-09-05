@@ -179,12 +179,12 @@ export function PerkRandomizer() {
 
             <div className="space-y-2">
               <Label>Character</Label>
-              <Select value={filters.character || ''} onValueChange={(value) => setFilters({...filters, character: value || undefined})}>
+              <Select value={filters.character || 'any'} onValueChange={(value) => setFilters({...filters, character: value === 'any' ? undefined : value})}>
                 <SelectTrigger>
                   <SelectValue placeholder="Any Character" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Any Character</SelectItem>
+                  <SelectItem value="any">Any Character</SelectItem>
                   {characters.map(character => (
                     <SelectItem key={character.id} value={character.name}>
                       {character.name}
@@ -196,12 +196,12 @@ export function PerkRandomizer() {
 
             <div className="space-y-2">
               <Label>Difficulty</Label>
-              <Select value={filters.difficulty || ''} onValueChange={(value) => setFilters({...filters, difficulty: value as Difficulty || undefined})}>
+              <Select value={filters.difficulty || 'any'} onValueChange={(value) => setFilters({...filters, difficulty: value === 'any' ? undefined : value as Difficulty})}>
                 <SelectTrigger>
                   <SelectValue placeholder="Any Difficulty" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Any Difficulty</SelectItem>
+                  <SelectItem value="any">Any Difficulty</SelectItem>
                   <SelectItem value="beginner">Beginner</SelectItem>
                   <SelectItem value="intermediate">Intermediate</SelectItem>
                   <SelectItem value="advanced">Advanced</SelectItem>
@@ -211,12 +211,12 @@ export function PerkRandomizer() {
 
             <div className="space-y-2">
               <Label>Focus</Label>
-              <Select value={filters.meta_focus || ''} onValueChange={(value) => setFilters({...filters, meta_focus: value as MetaFocus || undefined})}>
+              <Select value={filters.meta_focus || 'any'} onValueChange={(value) => setFilters({...filters, meta_focus: value === 'any' ? undefined : value as MetaFocus})}>
                 <SelectTrigger>
                   <SelectValue placeholder="Balanced" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Balanced</SelectItem>
+                  <SelectItem value="any">Balanced</SelectItem>
                   <SelectItem value="meta">Meta Perks</SelectItem>
                   <SelectItem value="fun">Fun Builds</SelectItem>
                 </SelectContent>
