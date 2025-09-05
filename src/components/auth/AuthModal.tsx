@@ -35,17 +35,19 @@ export function AuthModal({ mode, onToggleMode, onClose }: AuthModalProps) {
           return
         }
         
-        const { error } = await signUp(email, password, username)
-        if (error) {
-          toast.error(error.message)
+        const result = await signUp(email, password, username)
+        if (result.error) {
+          console.error('Signup error:', result.error)
+          toast.error(result.error.message || 'Failed to create account')
         } else {
           toast.success('Account created! Check your email to verify your account.')
           onClose()
         }
       } else {
-        const { error } = await signIn(email, password)
-        if (error) {
-          toast.error(error.message)
+        const result = await signIn(email, password)
+        if (result.error) {
+          console.error('Signin error:', result.error)
+          toast.error(result.error.message || 'Failed to sign in')
         } else {
           toast.success('Welcome back!')
           onClose()
@@ -60,8 +62,8 @@ export function AuthModal({ mode, onToggleMode, onClose }: AuthModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+      <Card className="w-full max-w-md my-8 mx-auto">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
             {mode === 'signup' ? 'Create Account' : 'Welcome Back'}
