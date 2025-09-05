@@ -39,7 +39,7 @@ export default function Home() {
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4">Everything you need to dominate</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            From build generation to match tracking, we've got all the tools to elevate your DBD experience.
+            From build generation to match tracking, we&apos;ve got all the tools to elevate your DBD experience.
           </p>
         </div>
 
@@ -193,14 +193,14 @@ export default function Home() {
             </div>
             <CardTitle className="text-2xl">Ready to level up your DBD game?</CardTitle>
             <CardDescription className="text-lg">
-              Join thousands of players who are already using DBD Nexus to dominate the Entity's realm.
+              Join thousands of players who are already using DBD Nexus to dominate the Entity&apos;s realm.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex gap-4 justify-center">
             <Button size="lg" asChild>
               <Link href="/randomizer">
                 <Clock className="mr-2 h-4 w-4" />
-                Start Now - It's Free
+                Start Now - It&apos;s Free
               </Link>
             </Button>
           </CardContent>

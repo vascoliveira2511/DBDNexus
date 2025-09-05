@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
 import type { Database } from '@/types/database'
@@ -11,22 +11,37 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
+  
   const supabase = createClient()
+  const isSupabaseConfigured = !!supabase
 
-  // Handle case where Supabase is not configured
-  if (!supabase) {
-    return {
-      user: null,
-      profile: null,
-      loading: false,
-      signUp: async () => ({ data: null, error: { message: 'Supabase not configured' } }),
-      signIn: async () => ({ data: null, error: { message: 'Supabase not configured' } }),
-      signOut: async () => ({ error: { message: 'Supabase not configured' } }),
-      updateProfile: async () => ({ data: null, error: { message: 'Supabase not configured' } }),
+  const fetchProfile = useCallback(async (userId: string) => {
+    if (!supabase) return
+    
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single()
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching profile:', error)
+        return
+      }
+
+      setProfile(data)
+    } catch (error) {
+      console.error('Error fetching profile:', error)
     }
-  }
+  }, [supabase])
 
   useEffect(() => {
+    if (!isSupabaseConfigured || !supabase) {
+      setLoading(false)
+      return
+    }
+
     // Get initial session
     const getInitialSession = async () => {
       const { data: { session } } = await supabase.auth.getSession()
@@ -55,28 +70,13 @@ export function useAuth() {
     )
 
     return () => subscription.unsubscribe()
-  }, [supabase.auth])
-
-  const fetchProfile = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single()
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching profile:', error)
-        return
-      }
-
-      setProfile(data)
-    } catch (error) {
-      console.error('Error fetching profile:', error)
-    }
-  }
+  }, [supabase, isSupabaseConfigured, fetchProfile])
 
   const signUp = async (email: string, password: string, username: string) => {
+    if (!isSupabaseConfigured || !supabase) {
+      return { data: null, error: { message: 'Supabase not configured' } }
+    }
+    
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -91,12 +91,16 @@ export function useAuth() {
       if (error) throw error
 
       return { data, error: null }
-    } catch (error: any) {
-      return { data: null, error }
+    } catch (error) {
+      return { data: null, error: error as Error }
     }
   }
 
   const signIn = async (email: string, password: string) => {
+    if (!isSupabaseConfigured || !supabase) {
+      return { data: null, error: { message: 'Supabase not configured' } }
+    }
+    
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -106,12 +110,16 @@ export function useAuth() {
       if (error) throw error
 
       return { data, error: null }
-    } catch (error: any) {
-      return { data: null, error }
+    } catch (error) {
+      return { data: null, error: error as Error }
     }
   }
 
   const signOut = async () => {
+    if (!isSupabaseConfigured || !supabase) {
+      return { error: { message: 'Supabase not configured' } }
+    }
+    
     try {
       const { error } = await supabase.auth.signOut()
       if (error) throw error
@@ -120,12 +128,16 @@ export function useAuth() {
       setProfile(null)
       
       return { error: null }
-    } catch (error: any) {
-      return { error }
+    } catch (error) {
+      return { error: error as Error }
     }
   }
 
   const updateProfile = async (updates: Partial<Profile>) => {
+    if (!isSupabaseConfigured || !supabase) {
+      return { data: null, error: { message: 'Supabase not configured' } }
+    }
+    
     try {
       if (!user) throw new Error('Not authenticated')
 
@@ -140,8 +152,8 @@ export function useAuth() {
 
       setProfile(data)
       return { data, error: null }
-    } catch (error: any) {
-      return { data: null, error }
+    } catch (error) {
+      return { data: null, error: error as Error }
     }
   }
 

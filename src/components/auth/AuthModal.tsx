@@ -51,7 +51,7 @@ export function AuthModal({ mode, onToggleMode, onClose }: AuthModalProps) {
           onClose()
         }
       }
-    } catch (error: any) {
+    } catch (error) {
       toast.error('An unexpected error occurred')
       console.error('Auth error:', error)
     } finally {

@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
 import { Shuffle, Save, Share, RotateCcw } from 'lucide-react'
-import { getPerksByRole, getCharactersByRole, allPerks } from '@/data/perks'
+import { getPerksByRole, getCharactersByRole } from '@/data/perks'
 import { Perk, Role, Difficulty, MetaFocus } from '@/types/perk'
 import { toast } from 'sonner'
 

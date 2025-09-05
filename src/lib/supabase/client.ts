@@ -7,7 +7,7 @@ export function createClient() {
   if (!url || !key || url === 'https://placeholder.supabase.co') {
     // Return a mock client for development when Supabase is not configured
     console.warn('Supabase not configured - using mock client for development')
-    return null as any
+    return null
   }
   
   return createBrowserClient(url, key)
